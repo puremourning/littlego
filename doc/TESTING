@@ -52,7 +52,81 @@ environment is located in
 
 Automated UI tests
 ------------------
-TODO
+The Instruments application can be used to run automated UI tests. The details
+are described in [1], but the gist is the following
+- Tests can be executed both on a real device and in the simulator
+- The test script is written in JavaScript using the UI Automation API to
+  simulate user actions. The API makes use of the underlying accessibility
+  mechanism to target the app's UI elements from outside of the app.
+- Only apps code signed with the developer's provisioning profile can be
+  tested
+
+After a bit of looking around, I noticed the Appium project [3] which looks
+interesting because it allows to write platform-independent test scripts in
+various languages. After a bit of fumbling, I got a basic test setup working
+using the following steps:
+
+1. Install Node.js and its package manager (npm) using MacPorts and while
+   logged in as a user with admin privileges
+     sudo port install nodejs
+     sudo port install npm
+2. While logged in as non-privileged dev user
+     cd /path/to/littlego
+     npm install appium
+     npm install wd
+   This installs stuff locally into the subfolder "node_modules". I added the
+   subfolder to .gitignore.
+3. Run the Appium server in one console window
+     ./node_modules/.bin/appium
+4. Run the test script
+     node simplest.js
+   This is an extremely simple test script that launches the app, taps the
+   "Computer play" button, and then quits the app. In order for this to work
+   I have added a bit of code that assigns accessibility labels to various
+   navigation bar and toolbar buttons.
+
+The thing that needs to be done next is to write tests. I have made a bit of
+research and decided on the following ground rules:
+- Tests must be written in JavaScript. I decided on this language because, in
+  order for Appium to run you already need Node.js installed, so there seems to
+  be little point in adding new dependencies to the project for a new scripting
+  language such as Ruby and its WebDriver bindings.
+- A useful style guide how to write JavaScript for Node.js can be found on [4].
+  The guide is pretty sensible, I especially like the recommendation to name
+  closures, and NOT to nest closures. I intend to deviate from the guide in the
+  following ways:
+   - Use double quotes, not single quotes
+   - Put opening braces go on their own line
+- Useful links
+  - General Appium stuff [6]
+  - Hint for how to wait for a disabled button to become enabled [7]
+  - The JSO Wire Protocol [8]
+  - Learning notes for JavaScript [9]
+  - Docs about Apple's UIAutomation [10], [11]
+
+
+Some things that look like trouble:
+- It takes very long to run even the simplest test. It should be possible to
+  do this more quickly, otherwise the write-test / run-test cycle will be
+  too cumbersome.
+- At the moment it looks as if the Simulator app needs to be quit whenever the
+  test script crashes. Look into ways how this can be prevented.
+- Find out how to say that we want to start the simulator for iPhone or iPad.
+  A hint can be found here [5].
+
+
+Links
+[1] http://developer.apple.com/library/ios/#documentation/DeveloperTools/Conceptual/InstrumentsUserGuide/UsingtheAutomationInstrument/UsingtheAutomationInstrument.html
+[2] http://developer.apple.com/library/ios/#documentation/DeveloperTools/Reference/UIAutomationRef/
+[3] http://appium.io/
+[4] http://nodeguide.com/style.html
+[5] https://saucelabs.com/appium/tutorial/2
+[6] https://github.com/appium/appium/wiki/_pages
+[7] http://stackoverflow.com/questions/9161773/how-can-i-get-selenium-web-driver-to-wait-for-an-element-to-be-accessible-not-j
+[8] http://code.google.com/p/selenium/wiki/JsonWireProtocol
+[9] http://wiki.herzbube.ch/index.php/LearningJavaScript
+[10] http://developer.apple.com/library/ios/#documentation/DeveloperTools/Conceptual/InstrumentsUserGuide/UsingtheAutomationInstrument/UsingtheAutomationInstrument.html
+[11] http://developer.apple.com/library/ios/#documentation/DeveloperTools/Reference/UIAutomationRef/_index.html
 
 
 Script for manual testing

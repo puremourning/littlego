@@ -280,24 +280,28 @@ enum NavigationDirection
   self.navigationBarButtonItemsForward = [NSMutableArray arrayWithCapacity:0];
 
   enum NavigationDirection direction = NavigationDirectionBackward;
-  [self addButtonWithImageNamed:rewindToStartButtonIconResource withSelector:@selector(rewindToStart:) navigationDirection:direction];
-  [self addButtonWithImageNamed:rewindButtonIconResource withSelector:@selector(rewind:) navigationDirection:direction];
-  [self addButtonWithImageNamed:backButtonIconResource withSelector:@selector(previousBoardPosition:) navigationDirection:direction];
+  [self addButtonWithImageNamed:rewindToStartButtonIconResource withSelector:@selector(rewindToStart:) navigationDirection:direction accessibilityLabel:rewindToStartButtonAccessibilityLabel];
+  [self addButtonWithImageNamed:rewindButtonIconResource withSelector:@selector(rewind:) navigationDirection:direction accessibilityLabel:rewindButtonAccessibilityLabel];
+  [self addButtonWithImageNamed:backButtonIconResource withSelector:@selector(previousBoardPosition:) navigationDirection:direction accessibilityLabel:previousBoardPositionButtonAccessibilityLabel];
   direction = NavigationDirectionForward;
-  [self addButtonWithImageNamed:playButtonIconResource withSelector:@selector(nextBoardPosition:) navigationDirection:direction];
-  [self addButtonWithImageNamed:fastForwardButtonIconResource withSelector:@selector(fastForward:) navigationDirection:direction];
-  [self addButtonWithImageNamed:forwardToEndButtonIconResource withSelector:@selector(fastForwardToEnd:) navigationDirection:direction];
+  [self addButtonWithImageNamed:playButtonIconResource withSelector:@selector(nextBoardPosition:) navigationDirection:direction accessibilityLabel:nextBoardPositionButtonAccessibilityLabel];
+  [self addButtonWithImageNamed:fastForwardButtonIconResource withSelector:@selector(fastForward:) navigationDirection:direction accessibilityLabel:fastForwardButtonAccessibilityLabel];
+  [self addButtonWithImageNamed:forwardToEndButtonIconResource withSelector:@selector(fastForwardToEnd:) navigationDirection:direction accessibilityLabel:forwardToEndButtonAccessibilityLabel];
 }
 
 // -----------------------------------------------------------------------------
 /// @brief Private helper for setupBarButtonItems().
 // -----------------------------------------------------------------------------
-- (void) addButtonWithImageNamed:(NSString*)imageName withSelector:(SEL)selector navigationDirection:(enum NavigationDirection)direction
+- (void) addButtonWithImageNamed:(NSString*)imageName
+                    withSelector:(SEL)selector
+             navigationDirection:(enum NavigationDirection)direction
+              accessibilityLabel:(NSString*)accessibilityLabel
 {
   UIBarButtonItem* button = [[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:imageName]
                                                               style:UIBarButtonItemStyleBordered
                                                              target:self
                                                              action:selector] autorelease];
+  button.accessibilityLabel = accessibilityLabel;
   [self.navigationBarButtonItems addObject:button];
   if (NavigationDirectionBackward == direction)
     [self.navigationBarButtonItemsBackward addObject:button];

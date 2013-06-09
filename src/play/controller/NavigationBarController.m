@@ -205,14 +205,17 @@
                                                               style:UIBarButtonItemStyleBordered
                                                              target:self
                                                              action:@selector(computerPlay:)] autorelease];
+  self.computerPlayButton.accessibilityLabel = computerPlayButtonAccessibilityLabel;
   self.passButton = [[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:passButtonIconResource]
                                                       style:UIBarButtonItemStyleBordered
                                                      target:self
                                                      action:@selector(pass:)] autorelease];
+  self.passButton.accessibilityLabel = passButtonAccessibilityLabel;
   self.discardBoardPositionButton = [[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"delete-to-left.png"]
                                                       style:UIBarButtonItemStyleBordered
                                                      target:self
                                                      action:@selector(discardBoardPosition:)] autorelease];
+  self.discardBoardPositionButton.accessibilityLabel = discardBoardPositionButtonAccessibilityLabel;
   self.pauseButton = [[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:pauseButtonIconResource]
                                                        style:UIBarButtonItemStyleBordered
                                                       target:self
@@ -221,14 +224,17 @@
                                                           style:UIBarButtonItemStyleBordered
                                                          target:self
                                                          action:@selector(continue:)] autorelease];
+  self.continueButton.accessibilityLabel = continueButtonAccessibilityLabel;
   self.interruptButton = [[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:interruptButtonIconResource]
                                                            style:UIBarButtonItemStyleBordered
                                                           target:self
                                                           action:@selector(interrupt:)] autorelease];
+  self.interruptButton.accessibilityLabel = interruptButtonAccessibilityLabel;
   self.gameInfoButton = [[[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:gameInfoButtonIconResource]
                                                           style:UIBarButtonItemStyleBordered
                                                          target:self
                                                          action:@selector(gameInfo:)] autorelease];
+  self.gameInfoButton.accessibilityLabel = gameInfoButtonAccessibilityLabel;
   self.gameActionsButton = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                           target:self
                                                                           action:@selector(gameActions:)] autorelease];
@@ -237,6 +243,7 @@
                                                                    target:self
                                                                    action:@selector(done:)] autorelease];
   self.doneButton.style = UIBarButtonItemStyleBordered;
+  self.doneButton.accessibilityLabel = doneButtonAccessibilityLabel;
   self.flexibleSpaceButtonLeft = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
                                                                                 target:nil
                                                                                 action:nil] autorelease];

@@ -336,6 +336,8 @@
 		CDD48FB01413E95500188B6A /* CommandBase.m in Sources */ = {isa = PBXBuildFile; fileRef = CDD48FAF1413E95500188B6A /* CommandBase.m */; };
 		CDD48FC01414038000188B6A /* CommandProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = CDD48FBF1414038000188B6A /* CommandProcessor.m */; };
 		CDD4901B14141BCF00188B6A /* CommandProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = CDD48FBF1414038000188B6A /* CommandProcessor.m */; };
+		CDD61F231764905500AD4D0B /* AccessibilityConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = CDD61F221764905500AD4D0B /* AccessibilityConstants.m */; };
+		CDD61F241764905500AD4D0B /* AccessibilityConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = CDD61F221764905500AD4D0B /* AccessibilityConstants.m */; };
 		CDD7D7E5175257850068CBBA /* ResetPlayersAndProfilesCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CDD7D7E4175257850068CBBA /* ResetPlayersAndProfilesCommand.m */; };
 		CDD961011662A8E300B54E09 /* render-readme.rb in Resources */ = {isa = PBXBuildFile; fileRef = CDD961001662A8E300B54E09 /* render-readme.rb */; };
 		CDDAB6EF14FA728D00DEBAAF /* UIDeviceAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = CDDAB6EE14FA728D00DEBAAF /* UIDeviceAdditions.m */; };
@@ -771,6 +773,8 @@
 		CDD48FAF1413E95500188B6A /* CommandBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommandBase.m; sourceTree = "<group>"; };
 		CDD48FBE1414038000188B6A /* CommandProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommandProcessor.h; sourceTree = "<group>"; };
 		CDD48FBF1414038000188B6A /* CommandProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommandProcessor.m; sourceTree = "<group>"; };
+		CDD61F211764905400AD4D0B /* AccessibilityConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccessibilityConstants.h; sourceTree = "<group>"; };
+		CDD61F221764905500AD4D0B /* AccessibilityConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccessibilityConstants.m; sourceTree = "<group>"; };
 		CDD7D7E3175257850068CBBA /* ResetPlayersAndProfilesCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResetPlayersAndProfilesCommand.h; sourceTree = "<group>"; };
 		CDD7D7E4175257850068CBBA /* ResetPlayersAndProfilesCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResetPlayersAndProfilesCommand.m; sourceTree = "<group>"; };
 		CDD7D7E61753F3FD0068CBBA /* NOTES.Build.3rdparty */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NOTES.Build.3rdparty; sourceTree = "<group>"; };
@@ -1006,6 +1010,8 @@
 		CD00A356148C2C21004E1A0C /* main */ = {
 			isa = PBXGroup;
 			children = (
+				CDD61F211764905400AD4D0B /* AccessibilityConstants.h */,
+				CDD61F221764905500AD4D0B /* AccessibilityConstants.m */,
 				CD00A357148C2C26004E1A0C /* ApplicationDelegate.h */,
 				CD00A358148C2C26004E1A0C /* ApplicationDelegate.mm */,
 				CD00A359148C2C26004E1A0C /* Constants.h */,
@@ -2198,6 +2204,7 @@
 				CD0AF19017401C56003BFC21 /* SliderInputController.m in Sources */,
 				CD6C7DBC17512152009FBEC4 /* UiSettingsModel.m in Sources */,
 				CDD7D7E5175257850068CBBA /* ResetPlayersAndProfilesCommand.m in Sources */,
+				CDD61F231764905500AD4D0B /* AccessibilityConstants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2346,6 +2353,7 @@
 				CD2D3AA3174C34C40030EDE4 /* SliderInputController.m in Sources */,
 				CD6C7DB9175004AE009FBEC4 /* MainTabBarController.m in Sources */,
 				CD6C7DBD17512152009FBEC4 /* UiSettingsModel.m in Sources */,
+				CDD61F241764905500AD4D0B /* AccessibilityConstants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
