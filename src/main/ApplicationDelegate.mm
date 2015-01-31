@@ -70,6 +70,9 @@
 #include <lumberjack/DDTTYLogger.h>
 #include <lumberjack/DDFileLogger.h>
 
+// Frameworks
+#import <GameKit/GameKit.h>
+
 // System includes
 #include <string>
 #include <vector>
@@ -200,6 +203,7 @@ static ApplicationDelegate* sharedDelegate = nil;
   [self setupSound];
   [self setupFuego];
   [self setupGUI];  // depends on setupUserDefaults (e.g. MainTabBarController wants to restore tab order)
+  [self setupGameCenter];
 
   // Further setup steps are executed in a secondary thread so that we can
   // display a progress HUD
@@ -372,7 +376,7 @@ static ApplicationDelegate* sharedDelegate = nil;
   {
     [DDLog addLogger:self.fileLogger];
     // Increase log level if you want to see more logging in the Debug console
-    [DDLog addLogger:[DDTTYLogger sharedInstance] withLogLevel:LOG_LEVEL_WARN];
+    [DDLog addLogger:[DDTTYLogger sharedInstance] withLogLevel:LOG_LEVEL_VERBOSE];
     DDLogInfo(@"Logging enabled. Log folder is %@", [self logFolder]);
   }
   else
@@ -631,6 +635,55 @@ static ApplicationDelegate* sharedDelegate = nil;
   [self setupWindowRootViewController];
   [UiElementMetrics setInterfaceOrientationSource:self.window.rootViewController];
   [self.window makeKeyAndVisible];
+}
+
+// -----------------------------------------------------------------------------
+/// @brief Sets up Game Center and authenticates the "local player" (the game
+/// center player on this device).
+// -----------------------------------------------------------------------------
+- (void) setupGameCenter
+{
+  GKLocalPlayer *localPlayer = [GKLocalPlayer localPlayer];
+  if (localPlayer == nil)
+  {
+    return;
+  }
+  
+  // setting the authentication handler implicitly (as a side-effect!) starts
+  // the process of authentication
+  localPlayer.authenticateHandler = ^(UIViewController *loginViewController,
+                                      NSError *error)
+  {
+    if (loginViewController != nil)
+    {
+      // TODO: create a command to show the view controller and fire it?
+      // it doesn't seem like this is neccessary, but we might want to add a
+      // UI option in case the user dismissed the game center login originally
+      // similarly, it is quite invasive to be prompted to sign in to game
+      // center every time you switch to/from the app. It might be that we need
+      // to have a "disable game center" option, though that appears to be
+      // explicitly forbidden in the game center docs.
+      DDLogVerbose(@"Game Center wants to display a view controller");
+      [self.tabBarController presentViewController:loginViewController
+                                          animated:YES
+                                        completion:nil];
+    }
+    else if (localPlayer.isAuthenticated)
+    {
+      // TODO: do whatever is needed to indicate that the player was
+      // authenticated, such as enabling the option for multi-player
+      DDLogInfo(@"Game Center authenticated");
+    }
+    else
+    {
+      // TODO: ensure that multi-player options are disabled
+      // we don't need to do anything with the error
+      // as the gamekit did whatver was required for us
+      DDLogError(@"Game Center error: %@ (%@)",
+                 error.localizedDescription,
+                 error.localizedFailureReason);
+    }
+  };
 }
 
 // -----------------------------------------------------------------------------
