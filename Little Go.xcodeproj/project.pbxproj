@@ -21,6 +21,10 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		B53F638A1A866472000EFBBE /* GameCenterAuthenticationCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = B53F63891A866472000EFBBE /* GameCenterAuthenticationCommand.m */; };
+		B53F638C1A866A6B000EFBBE /* GameCenterAuthenticationCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = B53F63891A866472000EFBBE /* GameCenterAuthenticationCommand.m */; };
+		B5946F071A87EA5C0098CF04 /* GameCenterTurnBasedMatchHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B5946F061A87EA5C0098CF04 /* GameCenterTurnBasedMatchHelper.m */; };
+		B5946F081A87F7110098CF04 /* GameCenterTurnBasedMatchHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B5946F061A87EA5C0098CF04 /* GameCenterTurnBasedMatchHelper.m */; };
 		CD00A34E1487F9CF004E1A0C /* MANUAL in Resources */ = {isa = PBXBuildFile; fileRef = CD00A34D1487F9CF004E1A0C /* MANUAL */; };
 		CD00A363148C2C26004E1A0C /* ApplicationDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = CD00A358148C2C26004E1A0C /* ApplicationDelegate.mm */; };
 		CD00A364148C2C26004E1A0C /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = CD00A35A148C2C26004E1A0C /* Constants.m */; };
@@ -514,8 +518,22 @@
 		CDFE66AE173EC446003D8776 /* EditResignBehaviourSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = CDFE66AD173EC446003D8776 /* EditResignBehaviourSettingsController.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		B58C6E101A7E55330010A238 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1D6058900D05DD3D006BFB54;
+			remoteInfo = "Little Go";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		1D6058910D05DD3D006BFB54 /* Little Go.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Little Go.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B53F63881A866472000EFBBE /* GameCenterAuthenticationCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameCenterAuthenticationCommand.h; sourceTree = "<group>"; };
+		B53F63891A866472000EFBBE /* GameCenterAuthenticationCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameCenterAuthenticationCommand.m; sourceTree = "<group>"; };
+		B5946F051A87EA5C0098CF04 /* GameCenterTurnBasedMatchHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameCenterTurnBasedMatchHelper.h; sourceTree = "<group>"; };
+		B5946F061A87EA5C0098CF04 /* GameCenterTurnBasedMatchHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameCenterTurnBasedMatchHelper.m; sourceTree = "<group>"; };
 		CD00A34D1487F9CF004E1A0C /* MANUAL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MANUAL; sourceTree = "<group>"; };
 		CD00A357148C2C26004E1A0C /* ApplicationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationDelegate.h; sourceTree = "<group>"; };
 		CD00A358148C2C26004E1A0C /* ApplicationDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ApplicationDelegate.mm; sourceTree = "<group>"; };
@@ -1155,6 +1173,8 @@
 				CD7C69F01AB0FCA9009EC5AD /* UIAreaInfo.m */,
 				CDA097011A994D01002FCD78 /* WindowRootViewController.h */,
 				CDA097021A994D01002FCD78 /* WindowRootViewController.m */,
+				B5946F051A87EA5C0098CF04 /* GameCenterTurnBasedMatchHelper.h */,
+				B5946F061A87EA5C0098CF04 /* GameCenterTurnBasedMatchHelper.m */,
 			);
 			path = main;
 			sourceTree = "<group>";
@@ -1642,6 +1662,8 @@
 				CDD7D7E4175257850068CBBA /* ResetPlayersAndProfilesCommand.m */,
 				CDBFCBBB16C3ED00001D78C0 /* SetupApplicationCommand.h */,
 				CDBFCBBC16C3ED00001D78C0 /* SetupApplicationCommand.m */,
+				B53F63881A866472000EFBBE /* GameCenterAuthenticationCommand.h */,
+				B53F63891A866472000EFBBE /* GameCenterAuthenticationCommand.m */,
 			);
 			path = command;
 			sourceTree = "<group>";
@@ -2063,6 +2085,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				B58C6E111A7E55330010A238 /* PBXTargetDependency */,
 			);
 			name = "Unit tests";
 			productName = "Unit tests";
@@ -2078,7 +2101,12 @@
 				LastUpgradeCheck = 0610;
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
-						DevelopmentTeam = P7NZKNP5L2;
+						DevelopmentTeam = XN5339Z4HH;
+						SystemCapabilities = {
+							com.apple.GameCenter = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -2252,6 +2280,7 @@
 				CDA097031A994D01002FCD78 /* WindowRootViewController.m in Sources */,
 				CD7C6A151AB49631009EC5AD /* BoardPositionCollectionViewController.m in Sources */,
 				CD10882213255A6B00E83543 /* GoPlayer.m in Sources */,
+				B53F638A1A866472000EFBBE /* GameCenterAuthenticationCommand.m in Sources */,
 				CD10882513255AA600E83543 /* GoPoint.m in Sources */,
 				CDBB035B133537C8007C1C3E /* GoBoardRegion.m in Sources */,
 				CDBB039B133573CC007C1C3E /* GoVertex.m in Sources */,
@@ -2292,6 +2321,7 @@
 				CDAFAE25195A1DCA00EF84A9 /* TiledScrollView.m in Sources */,
 				CD05AC7B1425470B00214BBE /* DeleteGameCommand.m in Sources */,
 				CD05AC7C1425470B00214BBE /* NewGameCommand.m in Sources */,
+				B5946F071A87EA5C0098CF04 /* GameCenterTurnBasedMatchHelper.m in Sources */,
 				CD05AC7D1425470B00214BBE /* RenameGameCommand.m in Sources */,
 				CD05AC7E1425470B00214BBE /* SaveGameCommand.m in Sources */,
 				CD05B11C142A606400214BBE /* BackupGameToSgfCommand.m in Sources */,
@@ -2434,6 +2464,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B53F638C1A866A6B000EFBBE /* GameCenterAuthenticationCommand.m in Sources */,
 				CDAFAE26195A1DCA00EF84A9 /* TiledScrollView.m in Sources */,
 				CDA596131401741800B250D8 /* GoVertexTest.m in Sources */,
 				CDA597521401825600B250D8 /* GoVertex.m in Sources */,
@@ -2612,6 +2643,7 @@
 				CDAFAE6F195F811D00EF84A9 /* BoardViewCGLayerCache.m in Sources */,
 				CDFD9F7918F1D56A0031CBCF /* SectionedDocumentViewController.m in Sources */,
 				CD2D3A9E174C348C0030EDE4 /* EditGtpEngineProfileController.m in Sources */,
+				B5946F081A87F7110098CF04 /* GameCenterTurnBasedMatchHelper.m in Sources */,
 				CD2D3A9F174C34910030EDE4 /* EditPlayerController.m in Sources */,
 				CD2D3AA0174C34A60030EDE4 /* EditPlayingStrengthSettingsController.m in Sources */,
 				CD2D3AA1174C34B20030EDE4 /* EditResignBehaviourSettingsController.m in Sources */,
@@ -2638,6 +2670,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		B58C6E111A7E55330010A238 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1D6058900D05DD3D006BFB54 /* Little Go */;
+			targetProxy = B58C6E101A7E55330010A238 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -2647,11 +2687,18 @@
 				CODE_SIGN_ENTITLEMENTS = resource/plist/Entitlements.plist;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/3rdparty/install/quincykit",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = src/main/Prefix.pch;
 				INFOPLIST_FILE = resource/plist/Info.plist;
 				PRODUCT_NAME = "Little Go";
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -2663,6 +2710,10 @@
 				CODE_SIGN_ENTITLEMENTS = resource/plist/Entitlements.plist;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/3rdparty/install/quincykit",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = src/main/Prefix.pch;
 				INFOPLIST_FILE = resource/plist/Info.plist;
@@ -2846,6 +2897,10 @@
 				CODE_SIGN_ENTITLEMENTS = resource/plist/Entitlements.plist;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/3rdparty/install/quincykit",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = src/main/Prefix.pch;
 				INFOPLIST_FILE = resource/plist/Info.plist;
@@ -2868,6 +2923,14 @@
 		CD89232E149FDC8A00A94A7B /* Distribute_AppStore */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = src/main/Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -2880,12 +2943,26 @@
 				);
 				INFOPLIST_FILE = test/resource/Info.plist;
 				PRODUCT_NAME = "Unit tests";
+				PROVISIONING_PROFILE = "";
+				TEST_AFTER_BUILD = YES;
+				WRAPPER_EXTENSION = xctest;
+				ZERO_LINK = NO;
 			};
 			name = Distribute_AppStore;
 		};
 		CDA595B11401384000B250D8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = src/main/Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -2904,6 +2981,14 @@
 		CDA595B21401384000B250D8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = src/main/Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -2922,6 +3007,14 @@
 		CDA595B31401384000B250D8 /* Distribute_AdHoc */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = src/main/Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -2934,6 +3027,9 @@
 				);
 				INFOPLIST_FILE = test/resource/Info.plist;
 				PRODUCT_NAME = "Unit tests";
+				PROVISIONING_PROFILE = "";
+				TEST_AFTER_BUILD = YES;
+				WRAPPER_EXTENSION = xctest;
 			};
 			name = Distribute_AdHoc;
 		};
@@ -2995,6 +3091,10 @@
 				CODE_SIGN_ENTITLEMENTS = resource/plist/Entitlements.plist;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/3rdparty/install/quincykit",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = src/main/Prefix.pch;
 				INFOPLIST_FILE = resource/plist/Info.plist;

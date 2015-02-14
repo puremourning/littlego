@@ -32,7 +32,7 @@
 ///
 /// Clients invoke submitCommand:() to pass a command object to the command
 /// processor. The command processor then executes the command by invoking the
-/// object's doI() method. Execution occurs synchronously or asynchronously
+/// object's doIt() method. Execution occurs synchronously or asynchronously
 /// depending on whether the command object conforms to the AsynchronousCommand
 /// protocol.
 ///

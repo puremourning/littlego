@@ -18,6 +18,8 @@
 // Forward declarations
 @class PlayerStatistics;
 @class GtpEngineProfile;
+@class GKLocalPlayer;
+@class GKPlayer;
 
 
 // -----------------------------------------------------------------------------
@@ -46,17 +48,29 @@
 - (id) init;
 - (id) initWithUUID:(NSString*)uuid;
 - (id) initWithDictionary:(NSDictionary*)dictionary;
+- (id) initWithLocalPlayer:(GKLocalPlayer*)localPlayer;
+- (id) initWithRemotePlayer:(GKPlayer*)remotePlayer;
 - (NSDictionary*) asDictionary;
 - (GtpEngineProfile*) gtpEngineProfile;
 
 /// @brief The player's UUID. This is a technical identifier guaranteed to be
 /// unique. This identifier is never displayed in the GUI.
 @property(nonatomic, retain, readonly) NSString* uuid;
+/// @brief. If this player is a Game Center player (i.e. a human or remote
+/// player generated due to either a local game center authentication, or
+/// the initiation of a game center game), this property holds the Game Center
+/// generated/designated unique ID. For non-game-center players, this property
+/// is empty
+@property(nonatomic, retain, readonly) NSString* gameCenterID;
+
 /// @brief The player's name. This is displayed in the GUI.
 @property(nonatomic, retain) NSString* name;
 /// @brief True if this Player object represents a human player, false if it
 /// represents a computer player.
 @property(nonatomic, assign, getter=isHuman) bool human;
+/// @brief. True if this is a remote human player (that is, a Game Center
+/// non-local player
+@property(nonatomic, assign, getter=isRemote) bool remote;
 /// @brief UUID of the GTP engine profile used by this Player. This ID is used
 /// by gtpEngineProfile() to obtain and return a GtpEngineProfile object.
 ///

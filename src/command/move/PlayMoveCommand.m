@@ -30,6 +30,7 @@
 #import "../../main/ApplicationDelegate.h"
 #import "../../main/WindowRootViewController.h"
 #import "../../shared/ApplicationStateManager.h"
+#import "../../main/GameCenterTurnBasedMatchHelper.h"
 
 
 // -----------------------------------------------------------------------------
@@ -203,6 +204,10 @@
     {
       if ([self.game isComputerPlayersTurn])
         [[[[ComputerPlayMoveCommand alloc] init] autorelease] submit];
+      else if ([self.game isRemotePlayersTurn])
+      {
+        [[GameCenterTurnBasedMatchHelper sharedInstance] switchTurn];
+      }
       break;
     }
   }

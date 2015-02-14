@@ -20,7 +20,7 @@
 
 // Forward declarations
 @class GoGame;
-
+@class GKTurnBasedMatch;
 
 // -----------------------------------------------------------------------------
 /// @brief The NewGameCommand class is responsible for starting a new game
@@ -52,6 +52,7 @@
 
 - (id) init;
 - (id) initWithGame:(GoGame*)game;
+- (id) initWithTurnBasedMatch:(GKTurnBasedMatch*)match;
 
 @property(nonatomic, assign) bool shouldSetupGtpBoard;
 @property(nonatomic, assign) bool shouldSetupGtpHandicapAndKomi;

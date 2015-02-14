@@ -39,6 +39,7 @@
 #import "../../utility/NSStringAdditions.h"
 #import "../../utility/PathUtilities.h"
 
+#import <GameKit/GameKit.h>
 
 static const int maxStepsForReplayMoves = 10;
 
@@ -71,6 +72,7 @@ static const int maxStepsForReplayMoves = 10;
     return nil;
 
   self.filePath = filePath;
+  self.fileData = nil;
   self.restoreMode = false;
   self.didTriggerComputerPlayer = false;
   m_boardSize = GoBoardSizeUndefined;
@@ -83,6 +85,30 @@ static const int maxStepsForReplayMoves = 10;
   self.progress = 0.0;
 
   return self;
+}
+
+-(id)initWithFileData:(NSData *)fileData
+{
+  // Call designated initializer of superclass (CommandBase)
+  self = [super init];
+  if (! self)
+    return nil;
+  
+  self.filePath = nil;
+  self.fileData = fileData;
+  self.restoreMode = false;
+  self.didTriggerComputerPlayer = false;
+  m_boardSize = GoBoardSizeUndefined;
+  m_handicap = nil;
+  m_komi = nil;
+  m_moves = nil;
+  m_oldCurrentDirectory = nil;
+  self.totalSteps = (6 + maxStepsForReplayMoves);  // 6 fixed steps for GTP commands
+  self.stepIncrease = 1.0 / self.totalSteps;
+  self.progress = 0.0;
+  
+  return self;
+
 }
 
 // -----------------------------------------------------------------------------
@@ -114,12 +140,12 @@ static const int maxStepsForReplayMoves = 10;
 // -----------------------------------------------------------------------------
 - (bool) doIt
 {
-  if (! self.filePath)
+  if (! self.filePath && !self.fileData)
   {
     DDLogError(@"%@: No file provided", [self shortDescription]);
     return false;
   }
-  DDLogVerbose(@"%@: Loading .sgf file %@", [self shortDescription], self.filePath);
+  DDLogVerbose(@"%@: Loading .sgf file %@", [self shortDescription], self.filePath ? self.filePath : @"<network>");
 
   bool runToCompletion = false;
   NSString* errorMessage = @"Internal error";
@@ -217,18 +243,32 @@ static const int maxStepsForReplayMoves = 10;
   NSString* temporaryDirectory = NSTemporaryDirectory();
   NSString* sgfTemporaryFilePath = [temporaryDirectory stringByAppendingPathComponent:sgfTemporaryFileName];
   NSFileManager* fileManager = [NSFileManager defaultManager];
-  if (! [fileManager fileExistsAtPath:self.filePath])
+
+  if (self.filePath)
   {
-    *errorMessage = @"Internal error: .sgf file not found";
-    return false;
+    if (! [fileManager fileExistsAtPath:self.filePath])
+    {
+      *errorMessage = @"Internal error: .sgf file not found";
+      return false;
+    }
+    NSError* error;
+    BOOL success = [PathUtilities copyItemAtPath:self.filePath overwritePath:sgfTemporaryFilePath error:&error];
+    if (! success)
+    {
+      *errorMessage = [NSString stringWithFormat:@"Internal error: Failed to copy .sgf file, reason: %@", [error localizedDescription]];
+      return false;
+    }
   }
-  NSError* error;
-  BOOL success = [PathUtilities copyItemAtPath:self.filePath overwritePath:sgfTemporaryFilePath error:&error];
-  if (! success)
+  else
   {
-    *errorMessage = [NSString stringWithFormat:@"Internal error: Failed to copy .sgf file, reason: %@", [error localizedDescription]];
-    return false;
+    assert(self.fileData);
+    // write the data to the temp file instead
+    if (![self.fileData writeToFile:sgfTemporaryFilePath atomically:YES])
+    {
+      *errorMessage = [NSString stringWithFormat:@"Internal error: Failed to write network data to tmp .sgf file"];
+    }
   }
+  
   m_oldCurrentDirectory = [[fileManager currentDirectoryPath] retain];
   [fileManager changeCurrentDirectoryPath:temporaryDirectory];
   return true;

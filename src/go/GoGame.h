@@ -68,7 +68,10 @@
 - (void) continue;
 - (bool) isLegalMove:(GoPoint*)point isIllegalReason:(enum GoMoveIsIllegalReason*)reason;
 - (bool) isComputerPlayersTurn;
+- (bool) isRemotePlayersTurn;
 - (void) revertStateFromEndedToInProgress;
+
+- (NSData*)dataForCurrentGameState;
 
 /// @brief The type of this GoGame object.
 @property(nonatomic, assign) enum GoGameType type;

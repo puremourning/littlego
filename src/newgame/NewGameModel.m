@@ -48,6 +48,8 @@
     self.komi = gDefaultKomiTerritoryScoring;
   self.koRule = GoKoRuleDefault;
   self.scoringSystem = gDefaultScoringSystem;
+  self.gameCenterLocalPlayerUUID = @"";
+  self.gcMatch  = nil;
   return self;
 }
 
@@ -61,6 +63,8 @@
   self.humanBlackPlayerUUID = nil;
   self.humanWhitePlayerUUID = nil;
   self.computerPlayerSelfPlayUUID = nil;
+  self.gameCenterLocalPlayerUUID = nil;
+  self.gcMatch = nil;
   [super dealloc];
 }
 
@@ -150,6 +154,16 @@
       return self.humanBlackPlayerUUID;
     case GoGameTypeComputerVsComputer:
       return self.computerPlayerSelfPlayUUID;
+    case GoGameTypeGameCenter:
+      if (self.computerPlaysWhite)
+      {
+        return self.gameCenterLocalPlayerUUID ;
+      }
+      else
+      {
+        return self.gameCenterRemotePlayerUUID;
+      }
+      break;
     default:
     {
       NSString* errorMessage = [NSString stringWithFormat:@"Invalid game type: %d", self.gameType];
@@ -185,6 +199,16 @@
       return self.humanWhitePlayerUUID;
     case GoGameTypeComputerVsComputer:
       return self.computerPlayerSelfPlayUUID;
+    case GoGameTypeGameCenter:
+      if (!self.computerPlaysWhite)
+      {
+        return self.gameCenterLocalPlayerUUID ;
+      }
+      else
+      {
+        return self.gameCenterRemotePlayerUUID;
+      }
+      break;
     default:
     {
       NSString* errorMessage = [NSString stringWithFormat:@"Invalid game type: %d", self.gameType];

@@ -24,7 +24,7 @@
 #import "../main/ApplicationDelegate.h"
 #import "../go/GoGame.h"
 #import "../go/GoPlayer.h"
-
+#import "GameKit/GameKit.h"
 
 // -----------------------------------------------------------------------------
 /// @brief Class extension with private properties for Player.
@@ -33,6 +33,7 @@
 /// @name Re-declaration of properties to make them readwrite privately
 //@{
 @property(nonatomic, retain, readwrite) NSString* uuid;
+@property(nonatomic, retain, readwrite) NSString* gameCenterID;
 //@}
 @end
 
@@ -86,6 +87,8 @@
     self.uuid = [NSString UUIDString];
     self.name = @"";
     self.human = true;
+    self.remote = false;
+    self.gameCenterID = @"";
     self.gtpEngineProfileUUID = @"";
     self.statistics = [[[PlayerStatistics alloc] init] autorelease];
   }
@@ -97,6 +100,7 @@
     // appears that this can be treated as an NSNumber object, from which we
     // can get the value by sending the message "boolValue".
     self.human = [[dictionary valueForKey:isHumanKey] boolValue];
+    self.remote = [[dictionary valueForKey:isRemoteKey] boolValue];
     if (self.human)
       self.gtpEngineProfileUUID = @"";
     else
@@ -112,12 +116,72 @@
 }
 
 // -----------------------------------------------------------------------------
+/// @brief Creates a local player object after a successful game center logic
+// -----------------------------------------------------------------------------
+- (id) initWithLocalPlayer:(GKLocalPlayer*)localPlayer
+{
+  self = [super init];
+  if (!self)
+  {
+    return nil;
+  }
+  // TODO: else if (find from dictionary) ?
+  else
+  {
+    assert(localPlayer.authenticated);
+    self.uuid = [NSString UUIDString];
+    self.name = [localPlayer displayName];
+    self.human = true;
+    self.remote = false;
+    self.gameCenterID = [localPlayer playerID];
+    self.gtpEngineProfileUUID = @"";
+    self.statistics = [[[PlayerStatistics alloc] init] autorelease];
+  }
+  DDLogVerbose(@"%@: UUID = %@, name = %@ (gamecenter local)",
+               self,
+               self.uuid,
+               self.name);
+  return self;
+}
+
+// -----------------------------------------------------------------------------
+/// @brief Creates a local player object after a successful game center logic
+// -----------------------------------------------------------------------------
+- (id) initWithRemotePlayer:(GKPlayer *)remotePlayer
+{
+  self = [super init];
+  if (!self)
+  {
+    return nil;
+  }
+  // TODO: else if (find from dictionary) ?
+  else
+  {
+    assert(localPlayer.authenticated);
+    self.uuid = [NSString UUIDString];
+    self.name = [remotePlayer displayName];
+    self.human = true;
+    self.remote = true;
+    self.gameCenterID = [remotePlayer playerID];
+    self.gtpEngineProfileUUID = @"";
+    self.statistics = [[[PlayerStatistics alloc] init] autorelease];
+  }
+  DDLogVerbose(@"%@: UUID = %@, name = %@ (gamecenter local)",
+               self,
+               self.uuid,
+               self.name);
+  return self;
+}
+
+
+// -----------------------------------------------------------------------------
 /// @brief Deallocates memory allocated by this Player object.
 // -----------------------------------------------------------------------------
 - (void) dealloc
 {
   self.uuid = nil;
   self.name = nil;
+  self.gameCenterID = nil;
   self.gtpEngineProfileUUID = nil;
   self.statistics = nil;
   [super dealloc];

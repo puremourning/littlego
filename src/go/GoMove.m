@@ -228,11 +228,12 @@
 // -----------------------------------------------------------------------------
 - (void) doIt
 {
-  // Nothing to do for pass moves
   if (GoMoveTypePass == self.type)
   {
     if (self.previous)
       self.zobristHash = self.previous.zobristHash;
+    
+    // Nothing to do for pass moves, skip the rest of this
     return;
   }
 

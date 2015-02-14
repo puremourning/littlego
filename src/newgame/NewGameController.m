@@ -23,6 +23,7 @@
 #import "../go/GoBoard.h"
 #import "../go/GoUtilities.h"
 #import "../main/ApplicationDelegate.h"
+#import "../main/GameCenterTurnBasedMatchHelper.h"
 #import "../player/PlayerModel.h"
 #import "../player/Player.h"
 #import "../ui/AutoLayoutUtility.h"
@@ -31,6 +32,7 @@
 #import "../ui/UiUtilities.h"
 #import "../utility/NSStringAdditions.h"
 #import "../utility/UIColorAdditions.h"
+
 
 
 // -----------------------------------------------------------------------------
@@ -106,6 +108,8 @@ enum GameRulesSectionItem
 @property(nonatomic, assign) PlayerModel* playerModel;
 @property(nonatomic, assign) UITableView* tableView;
 @property(nonatomic, assign) UISegmentedControl* segmentedControl;
+
+@property(nonatomic, retain) NSIndexPath* gameCenterIndexPath; // TODO: ugly
 @end
 
 
@@ -129,6 +133,7 @@ enum GameRulesSectionItem
   if (controller)
   {
     [controller autorelease];
+    controller.gameCenterIndexPath = nil;
     controller.delegate = delegate;
     controller.loadGame = loadGame;
     NewGameModel* theNewGameModel = [ApplicationDelegate sharedDelegate].theNewGameModel;
@@ -284,6 +289,10 @@ enum GameRulesSectionItem
   [self.segmentedControl insertSegmentWithImage:[UIImage imageNamed:computerVsComputerImageResource]
                                         atIndex:[NewGameController segmentIndexForGameType:GoGameTypeComputerVsComputer]
                                        animated:NO];
+  [self.segmentedControl insertSegmentWithTitle:@"GameCenter"
+                                        atIndex:[NewGameController segmentIndexForGameType:
+                                                 GoGameTypeGameCenter]
+                                       animated:NO];
   self.segmentedControl.selectedSegmentIndex = [NewGameController segmentIndexForGameType:self.theNewGameModel.gameTypeLastSelected];
   [self.segmentedControl addTarget:self action:@selector(gameTypeChanged:) forControlEvents:UIControlEventValueChanged];
 }
@@ -321,6 +330,18 @@ enum GameRulesSectionItem
 /// @brief Invoked when the user has decided to start a new game.
 // -----------------------------------------------------------------------------
 - (void) done:(id)sender
+{
+  if (self.theNewGameModel.gameTypeLastSelected == GoGameTypeGameCenter)
+  {
+    [self startMatchmaking];
+  }
+  else
+  {
+    [self readyNewGame];
+  }
+}
+
+- (void) readyNewGame
 {
   if ([GoGame sharedGame].document.isDirty)
   {
@@ -380,6 +401,8 @@ enum GameRulesSectionItem
           return MaxPlayersSectionItemHumanVsHuman;
         case GoGameTypeComputerVsComputer:
           return MaxPlayersSectionItemComputerVsComputer;
+        case GoGameTypeGameCenter:
+          return 1;
         default:
         {
           NSString* errorMessage = [NSString stringWithFormat:@"Invalid game type: %d", self.theNewGameModel.gameTypeLastSelected];
@@ -426,7 +449,11 @@ enum GameRulesSectionItem
   UITableViewCell* cell;
   if (PlayersSection == indexPath.section)
   {
-    if (GoGameTypeComputerVsHuman == self.theNewGameModel.gameTypeLastSelected && ComputerPlayerColorItem == indexPath.row)
+    if (GoGameTypeGameCenter == self.theNewGameModel.gameTypeLastSelected)
+    {
+      cell = [TableViewCellFactory cellWithType:SwitchCellType tableView:tableView];
+    }
+    else if (GoGameTypeComputerVsHuman == self.theNewGameModel.gameTypeLastSelected && ComputerPlayerColorItem == indexPath.row)
     {
       cell = [TableViewCellFactory cellWithType:SwitchCellType tableView:tableView];
     }
@@ -513,6 +540,14 @@ enum GameRulesSectionItem
           }
           break;
         }
+        case GoGameTypeGameCenter:
+        {
+          cell.textLabel.text = @"Remote plays white";
+          UISwitch* accessoryView = (UISwitch*)cell.accessoryView;
+          accessoryView.on = self.theNewGameModel.computerPlaysWhite ? YES : NO;
+          [accessoryView addTarget:self action:@selector(toggleComputerPlaysWhite:) forControlEvents:UIControlEventValueChanged];
+          break;
+        }
         default:
         {
           assert(0);
@@ -595,29 +630,35 @@ enum GameRulesSectionItem
 {
   [tableView deselectRowAtIndexPath:indexPath animated:NO];
 
-  UIViewController* modalController;
+  UIViewController* modalController = nil;
   switch (indexPath.section)
   {
     case PlayersSection:
     {
-      Player* defaultPlayer = [self playerForRowAtIndexPath:indexPath];
-      bool pickHumanPlayer = [self shouldPickHumanPlayerForRowAtIndexPath:indexPath];
-      NSArray* playerList = [self.playerModel playerListHuman:pickHumanPlayer];
-      NSMutableArray* itemList = [NSMutableArray arrayWithCapacity:0];
-      int indexOfDefaultPlayer = -1;
-      for (int playerIndex = 0; playerIndex < playerList.count; ++playerIndex)
+      if (GoGameTypeGameCenter != self.theNewGameModel.gameTypeLastSelected &&
+          indexPath.row != ComputerPlayerColorItem)
       {
-        Player* player = [playerList objectAtIndex:playerIndex];
-        [itemList addObject:player.name];
-        if (player == defaultPlayer)
-          indexOfDefaultPlayer = playerIndex;
+        Player* defaultPlayer = [self playerForRowAtIndexPath:indexPath];
+        bool pickHumanPlayer = [self shouldPickHumanPlayerForRowAtIndexPath:indexPath];
+        NSArray* playerList = [self.playerModel playerListHuman:pickHumanPlayer];
+        NSMutableArray* itemList = [NSMutableArray arrayWithCapacity:0];
+        int indexOfDefaultPlayer = -1;
+        for (int playerIndex = 0; playerIndex < playerList.count; ++playerIndex)
+        {
+          Player* player = [playerList objectAtIndex:playerIndex];
+          [itemList addObject:player.name];
+          if (player == defaultPlayer)
+            indexOfDefaultPlayer = playerIndex;
+        }
+        
+        ItemPickerController* itemPickerController =
+        [ItemPickerController controllerWithItemList:itemList
+                                               title:@"Select player"
+                                  indexOfDefaultItem:indexOfDefaultPlayer
+                                            delegate:self];
+        itemPickerController.context = indexPath;
+        modalController = itemPickerController;
       }
-      ItemPickerController* itemPickerController = [ItemPickerController controllerWithItemList:itemList
-                                                                                          title:@"Select player"
-                                                                             indexOfDefaultItem:indexOfDefaultPlayer
-                                                                                       delegate:self];
-      itemPickerController.context = indexPath;
-      modalController = itemPickerController;
       break;
     }
     case BoardSizeSection:
@@ -693,11 +734,15 @@ enum GameRulesSectionItem
       return;
     }
   }
-  UINavigationController* navigationController = [[UINavigationController alloc]
-                                                  initWithRootViewController:modalController];
-  navigationController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-  [self presentViewController:navigationController animated:YES completion:nil];
-  [navigationController release];
+  
+  if (modalController)
+  {
+    UINavigationController* navigationController = [[UINavigationController alloc]
+                                                    initWithRootViewController:modalController];
+    navigationController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    [self presentViewController:navigationController animated:YES completion:nil];
+    [navigationController release];
+  }
 }
 
 #pragma mark - ItemPickerDelegate overrides
@@ -714,6 +759,8 @@ enum GameRulesSectionItem
     {
       bool pickHumanPlayer = [self shouldPickHumanPlayerForRowAtIndexPath:indexPathContext];
       NSArray* playerList = [self.playerModel playerListHuman:pickHumanPlayer];
+
+      
       Player* newPlayer = [playerList objectAtIndex:controller.indexOfSelectedItem];
       [self updateWithNewPlayer:newPlayer forRowAtIndexPath:indexPathContext];
       self.navigationItem.rightBarButtonItem.enabled = [self isSelectionValid];
@@ -1031,6 +1078,9 @@ enum GameRulesSectionItem
       }
       break;
     }
+    case GoGameTypeGameCenter:
+      isSelectionValid = true;
+      break;
     default:
     {
       NSString* errorMessage = [NSString stringWithFormat:@"Invalid game type: %d", self.theNewGameModel.gameTypeLastSelected];
@@ -1128,6 +1178,8 @@ enum GameRulesSectionItem
       return 1;
     case GoGameTypeComputerVsComputer:
       return 2;
+    case GoGameTypeGameCenter:
+      return 3;
     default:
     {
       NSString* errorMessage = [NSString stringWithFormat:@"Invalid game type: %d", gameType];
@@ -1157,6 +1209,8 @@ enum GameRulesSectionItem
       return GoGameTypeHumanVsHuman;
     case 2:
       return GoGameTypeComputerVsComputer;
+    case 3:
+      return GoGameTypeGameCenter;
     default:
     {
       NSString* errorMessage = [NSString stringWithFormat:@"Invalid segment index: %ld", (long)segmentIndex];
@@ -1168,5 +1222,175 @@ enum GameRulesSectionItem
     }
   }
 }
+
+#pragma mark - Game Center matchmaking
+
+/*
+-(void)startMatchmaking
+{
+  //
+  // now that we've selected everything, find a match
+  //
+  GKMatchRequest *request = [[[GKMatchRequest alloc] init] autorelease];
+  request.minPlayers = 2;
+  request.maxPlayers = 2;
+  
+  GKMatchmakerViewController*mmvc = [[GKMatchmakerViewController alloc] initWithMatchRequest:request];
+  mmvc.matchmakerDelegate = self;
+  
+  [self presentViewController:mmvc animated:YES completion:nil];
+}
+*/
+
+-(void)startMatchmaking
+{
+  GKMatchRequest *request = [[[GKMatchRequest alloc] init] autorelease];
+  request.minPlayers = 2;
+  request.maxPlayers = 2;
+  request.playerAttributes = [[GameCenterTurnBasedMatchHelper sharedInstance] maskForGame:self.theNewGameModel];
+  
+ GKTurnBasedMatchmakerViewController *mmvc = [[GKTurnBasedMatchmakerViewController alloc] initWithMatchRequest:request];
+  mmvc.turnBasedMatchmakerDelegate = self;
+  
+  [self presentViewController:mmvc animated:YES completion:nil];
+
+}
+
+#pragma mark - GKTurnBasedMatchmakerViewControllerDelegate implementation
+
+
+-(void)turnBasedMatchmakerViewController:(GKTurnBasedMatchmakerViewController *)viewController didFailWithError:(NSError *)error
+{
+  DDLogError(@"Game Center error in matchmaker: %@ (%@)",
+             error.localizedDescription,
+             error.localizedFailureReason);
+  
+  [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)turnBasedMatchmakerViewController:(GKTurnBasedMatchmakerViewController *)viewController didFindMatch:(GKTurnBasedMatch *)match
+{
+  DDLogVerbose(@"Did Find Match! matchmaking");
+
+  [self dismissViewControllerAnimated:YES completion:nil];
+  
+  //
+  // the user either invited a friend, picked an existing match, or started
+  // matchmaking.
+  //
+  switch (match.status) {
+    case GKTurnBasedMatchStatusMatching:
+      //
+      // TODO: at this point we might not even have the remote player
+      // in a turn-based match, if using matchmaking. if so, we need to create one
+      // as a temporary and then replace it later
+      //
+      self.theNewGameModel.gameCenterRemotePlayerUUID = [self.playerModel getDefaultRemoteGameCenterPlayer].uuid;
+      
+      // TODO: the code in here might be unreachable
+      for (GKTurnBasedParticipant *participant in match.participants)
+      {
+        if (participant.status == GKTurnBasedParticipantStatusActive &&
+            ![self.playerModel isLocalGameCenterPlayer:participant.player])
+        {
+          // we have an oponent!
+          Player *remotePlayer = [self.playerModel playerForRemotePlayer:participant.player];
+          
+          self.theNewGameModel.gameCenterRemotePlayerUUID = remotePlayer.uuid;
+          break;
+        }
+      }
+
+      break;
+      
+    case GKTurnBasedMatchStatusOpen:
+      // we must have joined an existing match?
+      self.theNewGameModel.gameCenterRemotePlayerUUID = [self.playerModel getDefaultRemoteGameCenterPlayer].uuid;
+      
+      // TODO: the code in here might be unreachable
+      for (GKTurnBasedParticipant *participant in match.participants)
+      {
+        if (participant.status == GKTurnBasedParticipantStatusActive &&
+            ![self.playerModel isLocalGameCenterPlayer:participant.player])
+        {
+          // we have an oponent!
+          Player *remotePlayer = [self.playerModel playerForRemotePlayer:participant.player];
+          
+          self.theNewGameModel.gameCenterRemotePlayerUUID = remotePlayer.uuid;
+          break;
+        }
+      }
+      
+      break;
+      
+    case GKTurnBasedMatchStatusEnded:
+      DDLogError(@"Match returned from game center in Ended state");
+      return;
+      break;
+      
+
+    case GKTurnBasedMatchStatusUnknown:
+      // this is some sort of error
+      DDLogError(@"Match returned from game center in Unknown state");
+      return;
+      break;
+      
+    default:
+      break;
+  }
+  
+  self.theNewGameModel.gcMatch = match;
+  [self newGame];
+}
+
+-(void)turnBasedMatchmakerViewControllerWasCancelled:(GKTurnBasedMatchmakerViewController *)viewController
+{
+  DDLogError(@"Cancelled matchmaking");
+  [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)turnBasedMatchmakerViewController:(GKTurnBasedMatchmakerViewController *)viewController playerQuitForMatch:(GKTurnBasedMatch *)match
+{
+  // the player resigned from an existing match. we should probably do something
+  // like fire a resignation command
+  
+  // TODO handle this (e.g. by calling back on the app delegate)
+}
+
+/*
+ 
+#pragma mark - GKMatchmakerViewControllerDelegate (real-time version)
+
+-(void)matchmakerViewController:(GKMatchmakerViewController *)viewController didFailWithError:(NSError *)error
+{
+  DDLogError(@"Game Center error in matchmaker: %@ (%@)",
+             error.localizedDescription,
+             error.localizedFailureReason);
+  
+  [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)matchmakerViewController:(GKMatchmakerViewController *)viewController didFindMatch:(GKMatch *)match
+{
+  DDLogError(@"Did Find Match! matchmaking");
+  
+  [self dismissViewControllerAnimated:YES completion:nil];
+  
+  self.theNewGameModel.gcMatch = match;
+  
+  //
+  // find player or create a new one
+  //
+  
+  
+  [self newGame];
+}
+
+-(void)matchmakerViewControllerWasCancelled:(GKMatchmakerViewController *)viewController
+{
+  [self dismissViewControllerAnimated:YES completion:nil]
+}
+ 
+ */
 
 @end

@@ -14,7 +14,7 @@
 // limitations under the License.
 // -----------------------------------------------------------------------------
 
-
+@class GKTurnBasedMatch;
 
 // -----------------------------------------------------------------------------
 /// @brief The NewGameModel class provides user defaults data to its clients
@@ -45,6 +45,8 @@
 /// @brief In a computer vs. human game.
 @property(nonatomic, retain) NSString* computerPlayerUUID;
 /// @brief In a computer vs. human game.
+//  or a game center game. In game center game "computer" means the remote
+/// player (TODO: hack)
 @property(nonatomic, assign) bool computerPlaysWhite;
 /// @brief In a human vs. human game.
 @property(nonatomic, retain) NSString* humanBlackPlayerUUID;
@@ -57,5 +59,12 @@
 @property(nonatomic, assign) double komi;
 @property(nonatomic, assign) enum GoKoRule koRule;
 @property(nonatomic, assign) enum GoScoringSystem scoringSystem;
+
+/// @brief UUID of the Player representing the Local GameCenter player
+@property(nonatomic, retain) NSString *gameCenterLocalPlayerUUID;
+/// @brief UUID of the Player representing the Remote GameCenter playre;
+@property(nonatomic, retain) NSString *gameCenterRemotePlayerUUID;
+/// @brief In Game Center game, the turn-based-match that was created
+@property(nonatomic, retain) GKTurnBasedMatch *gcMatch;
 
 @end

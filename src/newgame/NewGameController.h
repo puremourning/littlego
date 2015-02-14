@@ -20,8 +20,11 @@
 #import "HandicapSelectionController.h"
 #import "KomiSelectionController.h"
 
+#import <GameKit/GameKit.h>
+
 // Forward declarations
 @class NewGameController;
+@class GKLocalPlayer;
 
 
 // -----------------------------------------------------------------------------
@@ -66,7 +69,8 @@
                                                  ItemPickerDelegate,
                                                  HandicapSelectionDelegate,
                                                  KomiSelectionDelegate,
-                                                 UIAlertViewDelegate>
+                                                 UIAlertViewDelegate,
+                                                 GKTurnBasedMatchmakerViewControllerDelegate>
 {
 }
 
@@ -78,5 +82,7 @@
 /// @brief True if the intent for starting a new game is to load a game from
 /// the archive.
 @property(nonatomic, assign) bool loadGame;
+
+
 
 @end

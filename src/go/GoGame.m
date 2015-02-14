@@ -31,6 +31,7 @@
 #import "GoZobristTable.h"
 #import "../player/Player.h"
 #import "../main/ApplicationDelegate.h"
+#import "../utility/PathUtilities.h"
 
 
 @implementation GoGame
@@ -572,6 +573,11 @@
   return (! self.currentPlayer.player.isHuman);
 }
 
+- (bool) isRemotePlayersTurn
+{
+  return (self.currentPlayer.player.isHuman && self.currentPlayer.player.isRemote);
+}
+
 // -----------------------------------------------------------------------------
 // Property is documented in the header file.
 // -----------------------------------------------------------------------------
@@ -721,6 +727,26 @@
     self.state = GoGameStateGameIsPaused;
   else
     self.state = GoGameStateGameHasStarted;
+}
+
+-(NSData*)dataForCurrentGameState
+{
+  // TODO: HACK: this does NOT belong here
+  BOOL fileExists;
+  NSString* backupFilePath = [PathUtilities filePathForBackupFileNamed:sgfBackupFileName
+                                                            fileExists:&fileExists];
+
+  NSData *gameData = nil;
+  if (!fileExists)
+  {
+    gameData = [[[NSData alloc] init] autorelease];
+  }
+  else
+  {
+    gameData = [NSData dataWithContentsOfFile:backupFilePath];
+  }
+  
+  return gameData;
 }
 
 @end

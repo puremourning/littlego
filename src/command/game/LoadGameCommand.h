@@ -22,7 +22,6 @@
 // Forward declarations
 @class GtpCommand;
 
-
 // -----------------------------------------------------------------------------
 /// @brief The LoadGameCommand class is responsible for loading a game from an
 /// .sgf file and starting a new game using the information in that file.
@@ -74,10 +73,13 @@
 }
 
 - (id) initWithFilePath:(NSString*)filePath;
+- (id) initWithFileData:(NSData*)fileData;
 - (id) initWithGameName:(NSString*)gameName;
 
 /// @brief Full path to the .sgf file to be loaded.
 @property(nonatomic, retain) NSString* filePath;
+/// @brief file data if sent over network instead of read from file
+@property(nonatomic, retain) NSData *fileData;
 /// @brief True if the command is executed to restore a backup game. False
 /// (the default) if the command is executed to load a game from the archive.
 @property(nonatomic, assign) bool restoreMode;

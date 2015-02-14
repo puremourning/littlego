@@ -19,6 +19,7 @@
 #import "NewGameCommand.h"
 #import "../move/ComputerPlayMoveCommand.h"
 #import "../../main/ApplicationDelegate.h"
+#import "../../main/GameCenterTurnBasedMatchHelper.h"
 #import "../../gtp/GtpCommand.h"
 #import "../../gtp/GtpResponse.h"
 #import "../../gtp/GtpUtilities.h"
@@ -38,6 +39,7 @@
 // -----------------------------------------------------------------------------
 @interface NewGameCommand()
 @property(nonatomic, assign) GoGame* prefabricatedGame;
+@property(nonatomic, retain) GKTurnBasedMatch* turnBasedMatch;
 @end
 
 
@@ -50,6 +52,18 @@
 - (id) init
 {
   return [self initWithGame:nil];
+}
+
+//
+/// @brief start a new game with the newly returned GKTurnBasedMatch
+//
+- (id) initWithTurnBasedMatch:(GKTurnBasedMatch *)match
+{
+  self = [self initWithGame:nil];
+  
+  self.turnBasedMatch = match;
+  
+  return self;
 }
 
 // -----------------------------------------------------------------------------
@@ -65,12 +79,21 @@
   self = [super init];
   if (! self)
     return nil;
+
   self.prefabricatedGame = game;
+  self.turnBasedMatch = nil;
+  
   self.shouldSetupGtpBoard = true;
   self.shouldSetupGtpHandicapAndKomi = true;
   self.shouldSetupComputerPlayer = true;
   self.shouldTriggerComputerPlayer = true;
   return self;
+}
+
+-(void)dealloc
+{
+  self.turnBasedMatch = nil;
+  [super dealloc];
 }
 
 // -----------------------------------------------------------------------------
@@ -86,8 +109,13 @@
     [self setupGtpHandicapAndKomi];
   if (self.shouldSetupComputerPlayer)
     [GtpUtilities setupComputerPlayer];
+  
   if (self.shouldTriggerComputerPlayer)
+  {
     [self triggerComputerPlayer];
+    [self startGameCenterMatch];
+  }
+  
   return true;
 }
 
@@ -146,6 +174,13 @@
     newGame.type = newGameModel.gameType;
     newGame.rules.koRule = newGameModel.koRule;
     newGame.rules.scoringSystem = newGameModel.scoringSystem;
+    
+    if (newGameModel.gameType == GoGameTypeGameCenter)
+    {
+      // TODO: this feels a lot like a hack, like it should be
+      // NewGameController that does this?
+      [GameCenterTurnBasedMatchHelper sharedInstance].currentMatch = newGameModel.gcMatch;
+    }
   }
   DDLogVerbose(@"%@: Game object configuration: board = %@, komi = %.1f, handicapPoints = %@, playerBlack = %@ (uuid = %@), playerWhite = %@ (uuid = %@), type = %d, ko rule = %d, scoring = %d",
                [self shortDescription],
@@ -235,6 +270,20 @@
         newPlayerIsHuman = playerIsBlack;
       else
         newPlayerIsHuman = !playerIsBlack;
+      break;
+    }
+    case GoGameTypeGameCenter:
+    {
+      newPlayerIsHuman = true;
+      if (newGameModel.computerPlaysWhite)
+      {
+        newPlayer.remote = playerIsBlack;
+      }
+      else
+      {
+        newPlayer.remote = !playerIsBlack;
+      }
+      newPlayer.remote = true;
       break;
     }
     default:
@@ -373,6 +422,28 @@
 {
   if ([[GoGame sharedGame] isComputerPlayersTurn])
     [[[[ComputerPlayMoveCommand alloc] init] autorelease] submit];
+}
+
+-(void) startGameCenterMatch
+{
+  GKTurnBasedMatch * match = [GameCenterTurnBasedMatchHelper sharedInstance].currentMatch;
+  ApplicationDelegate * appDelegate = [ApplicationDelegate sharedDelegate];
+  if (match.status == GKTurnBasedExchangeStatusActive &&
+      [appDelegate.playerModel isLocalGameCenterPlayer:match.currentParticipant.player])
+  {
+    //
+    // it is our turn
+    //
+    if (appDelegate.theNewGameModel.computerPlaysWhite)
+    {
+      // it really is our turn, so we need to make a move
+    }
+    else
+    {
+      // it is the other player's turn
+      [[GameCenterTurnBasedMatchHelper sharedInstance] switchTurn];
+    }
+  }
 }
 
 @end

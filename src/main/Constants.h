@@ -252,7 +252,8 @@ enum GoGameType
   GoGameTypeUnknown,             ///< @brief Unknown game type.
   GoGameTypeComputerVsHuman,     ///< @brief A computer and a human player play against each other.
   GoGameTypeComputerVsComputer,  ///< @brief Two computer players play against each other.
-  GoGameTypeHumanVsHuman         ///< @brief Two human players play against each other.
+  GoGameTypeHumanVsHuman,        ///< @brief Two human players play against each other.
+  GoGameTypeGameCenter           ///< @brief Local Human player vs. remote GameCenter player
 };
 
 /// @brief Enumerates the possible states of a GoGame.
@@ -908,6 +909,8 @@ extern NSString* playerListKey;
 extern NSString* playerUUIDKey;
 extern NSString* playerNameKey;
 extern NSString* isHumanKey;
+extern NSString* isRemoteKey;
+extern NSString* gameCenterIDKey;
 extern NSString* gtpEngineProfileReferenceKey;
 extern NSString* statisticsKey;
 extern NSString* gamesPlayedKey;

@@ -42,7 +42,8 @@
 + (Player*) playerProvidingActiveProfile
 {
   GoGame* game = [GoGame sharedGame];
-  if (GoGameTypeHumanVsHuman == game.type)
+  if (GoGameTypeHumanVsHuman == game.type ||
+      GoGameTypeGameCenter == game.type)
   {
     return nil;
   }
@@ -65,8 +66,8 @@
 ///   player
 /// - Computer vs. computer game: Applies the settings obtained from the black
 ///   computer player
-/// - Human vs. human game: There is no computer player. As a fallback the
-///   settings from the default GTP engine profile are applied.
+/// - Human vs. human game (incl GameCenter): There is no computer player.
+///   As a fallback the settings from the default GTP engine profile are applied.
 // -----------------------------------------------------------------------------
 + (void) setupComputerPlayer
 {

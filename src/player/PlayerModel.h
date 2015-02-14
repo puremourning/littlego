@@ -17,7 +17,8 @@
 
 // Forward declarations
 @class Player;
-
+@class GKPlayer;
+@class GKLocalPlayer;
 
 // -----------------------------------------------------------------------------
 /// @brief The PlayerModel class manages Player objects and provides clients
@@ -37,6 +38,10 @@
 - (void) remove:(Player*)player;
 - (Player*) playerWithUUID:(NSString*)uuid;
 - (NSArray*) playerListHuman:(bool)human;
+- (BOOL) isLocalGameCenterPlayer:(GKPlayer*)player;
+- (Player*) playerForLocalPlayer:(GKLocalPlayer*)localPlayer;
+- (Player*) playerForRemotePlayer:(GKPlayer*)remotePlayer;
+- (Player*) getDefaultRemoteGameCenterPlayer;
 
 @property(nonatomic, assign) int playerCount;
 @property(nonatomic, retain) NSArray* playerList;

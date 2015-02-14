@@ -57,6 +57,10 @@
 	<key>PlayerList</key>
 	<array>
 		<dict>
+			<key>GameCenterID</key>
+			<string></string>
+			<key>IsRemote</key>
+			<false/>
 			<key>UUID</key>
 			<string>F1017CAF-BCF5-406F-AC4C-5B4F794C006C</string>
 			<key>Name</key>
@@ -76,6 +80,10 @@
 			</dict>
 		</dict>
 		<dict>
+			<key>IsRemote</key>
+			<false/>
+			<key>GameCenterID</key>
+			<string></string>
 			<key>UUID</key>
 			<string>766CDA23-0C58-480B-A8B5-1F34BDA41677</string>
 			<key>Name</key>
@@ -97,6 +105,10 @@
 			</dict>
 		</dict>
 		<dict>
+			<key>GameCenterID</key>
+			<string></string>
+			<key>IsRemote</key>
+			<false/>
 			<key>UUID</key>
 			<string>143893E4-6B81-40AD-93A7-15425B95BC14</string>
 			<key>Name</key>
