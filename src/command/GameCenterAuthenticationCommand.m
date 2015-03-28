@@ -49,13 +49,19 @@
 // -----------------------------------------------------------------------------
 - (bool) doIt
 {
-  [[ApplicationDelegate sharedDelegate].tabBarController
+  [self performSelectorOnMainThread:@selector(doItInMainThread)
+                         withObject:nil
+                      waitUntilDone:YES];
+  
+  return true;
+}
+
+-(void) doItInMainThread
+{
+  [[ApplicationDelegate sharedDelegate].windowRootViewController
         presentViewController:self.loginViewController
                      animated:YES
                    completion:nil];
-  
-   // return value is ignored for asyncronous commands
-  return true;
 }
 
 @end
