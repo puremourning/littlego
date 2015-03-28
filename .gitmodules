@@ -1,15 +1,20 @@
 [submodule "3rdparty/src/fuego-on-ios"]
 	path = 3rdparty/src/fuego-on-ios
 	url = https://github.com/herzbube/fuego-on-ios.git
+        ignore = untracked
 [submodule "3rdparty/src/CocoaLumberjack"]
 	path = 3rdparty/src/CocoaLumberjack
 	url = https://github.com/CocoaLumberjack/CocoaLumberjack.git
+        ignore = untracked
 [submodule "3rdparty/src/QuincyKit"]
 	path = 3rdparty/src/QuincyKit
 	url = https://github.com/bitstadium/QuincyKit.git
+        ignore = untracked
 [submodule "3rdparty/src/ZipKit"]
 	path = 3rdparty/src/ZipKit
 	url = https://github.com/kolpanic/ZipKit.git
+        ignore = untracked
 [submodule "3rdparty/src/MBProgressHUD"]
 	path = 3rdparty/src/MBProgressHUD
 	url = https://github.com/matej/MBProgressHUD.git
+        ignore = untracked
