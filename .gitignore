@@ -13,3 +13,7 @@ dist/
 crash/
 bugreport/
 .DS_Store
+# vim editor tmp files
+*.swp
+*.swo
+*~
